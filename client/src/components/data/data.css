@@ -1,0 +1,6 @@
+img {
+  object-fit: contain !important;
+}
+.MuiPaper-root {
+  padding-bottom: 0;
+}

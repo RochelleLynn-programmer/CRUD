@@ -8,7 +8,7 @@ import GridFsStorage from "multer-gridfs-storage";
 import Grid from "gridfs-stream";
 import crypto from "crypto";
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 const app = express();
 app.use(cors());
 app.use(express.json());
