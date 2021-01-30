@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import axiosPath from "../../axios";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import { Paper, Typography, Container, Button } from "@material-ui/core";
+import { Paper, Container, Button } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,11 +23,23 @@ const useStyles = makeStyles((theme) => ({
   flex: { display: "flex", justifyContent: "center", alignItems: "center" },
 }));
 
-export const UpdateDataForm = ({ first, last, email, description, originalName, _id, update, setUpdate }) => {
+export const UpdateDataForm = ({
+  first,
+  last,
+  email,
+  description,
+  originalName,
+  _id,
+  number,
+  update,
+  setUpdate,
+  setOpenPopUp,
+}) => {
   const classes = useStyles();
   const [updateFirst, setUpdateFirst] = useState(first);
   const [updateLast, setUpdateLast] = useState(last);
   const [updateEmail, setUpdateEmail] = useState(email);
+  const [updateNumber, setUpdateNumber] = useState(number);
   const [updateDescription, setUpdateDescription] = useState(description);
   const [updateOriginalName, setUpdateOriginalName] = useState(originalName);
   const { register, handleSubmit } = useForm();
@@ -39,6 +51,7 @@ export const UpdateDataForm = ({ first, last, email, description, originalName, 
       email: updateEmail,
       description: updateDescription,
       originalName: updateOriginalName,
+      number: updateNumber,
     };
 
     console.log(body);
@@ -49,14 +62,13 @@ export const UpdateDataForm = ({ first, last, email, description, originalName, 
       setUpdate(update + 1);
       console.log("update num: ", update);
     } catch (err) {
-      console.log("Error Form line 28: ", err);
+      console.log("Error UpdateDataForm line 65: ", err);
     }
+    setOpenPopUp(false);
   };
   return (
     <Container className={classes.flex} maxWidth="sm">
       <Paper className={classes.paper}>
-        <Typography>Update data in this entry</Typography>
-
         <form id="userForm" className={classes.root} autoComplete="off">
           <TextField
             id="first"
@@ -101,6 +113,20 @@ export const UpdateDataForm = ({ first, last, email, description, originalName, 
             }}
           />
           <TextField
+            id="originalName"
+            name="originalName"
+            value={updateOriginalName}
+            onChange={(e) => setUpdateOriginalName(e.target.value)}
+            ref={register({ required: true, name: "originalName" })}
+            label="originalName of Image"
+            type="text"
+            placeholder={originalName}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            variant="outlined"
+          />
+          <TextField
             id="description"
             name="description"
             value={updateDescription}
@@ -115,16 +141,17 @@ export const UpdateDataForm = ({ first, last, email, description, originalName, 
             }}
             variant="outlined"
           />
+
           <TextField
-            id="originalName"
-            name="originalName"
-            value={updateOriginalName}
-            onChange={(e) => setUpdateOriginalName(e.target.value)}
-            ref={register({ required: true, name: "description" })}
-            label="originalName of Image"
+            id="number"
+            name="number"
+            value={updateNumber}
+            onChange={(e) => setUpdateNumber(e.target.value)}
+            ref={register({ required: true, name: "number" })}
+            label="Number for Calculations"
             type="text"
             multiline
-            placeholder={originalName}
+            placeholder={number}
             InputLabelProps={{
               shrink: true,
             }}

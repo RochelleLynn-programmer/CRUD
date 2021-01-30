@@ -29,18 +29,18 @@ export const NewForm = () => {
   const [last, setLast] = useState("");
   const [email, setEmail] = useState("");
   const [description, setDescription] = useState("");
+  const [number, setNumber] = useState(0);
   const [image, setImage] = useState("");
   const { register, handleSubmit } = useForm();
 
   const onSubmit = async () => {
-    // console.log(first, last, email, description);
-    // console.log(first, last, email, description, image);
     const uploadedForm = new FormData();
     uploadedForm.append("first", first);
     uploadedForm.append("last", last);
     uploadedForm.append("email", email);
     uploadedForm.append("description", description);
     uploadedForm.append("photo", image);
+    uploadedForm.append("number", number);
 
     try {
       await axiosPath.post("/uploadForm", uploadedForm, {
@@ -50,9 +50,10 @@ export const NewForm = () => {
       setLast("");
       setEmail("");
       setDescription("");
+      setNumber(0);
       setImage("");
     } catch (err) {
-      console.log("Error Form line 28: ", err);
+      console.log("Error NewForm line 56: ", err);
     }
   };
   return (
@@ -110,6 +111,20 @@ export const NewForm = () => {
             type="text"
             multiline
             placeholder="A short description about the image submitted"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            variant="outlined"
+          />
+          <TextField
+            id="number"
+            name="number"
+            value={number}
+            onChange={(e) => setNumber(e.target.value)}
+            ref={register({ required: true, name: "number" })}
+            label="Number to do calculations"
+            type="number"
+            placeholder="Number to do calculations "
             InputLabelProps={{
               shrink: true,
             }}

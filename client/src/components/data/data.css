@@ -4,3 +4,9 @@ img {
 .MuiPaper-root {
   padding-bottom: 0;
 }
+.MuiDialogContent-root {
+  background-color: rgba(230, 229, 229, 0.858);
+  /* padding: 0;
+  margin: 0;
+  overflow: hidden; */
+}

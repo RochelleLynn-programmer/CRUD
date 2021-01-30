@@ -7,8 +7,8 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles({
   gridContainer: {
     paddingTop: "20px",
-    paddingLeft: "20px",
-    paddingRight: "20px",
+    paddingLeft: "30px",
+    paddingRight: "30px",
   },
 });
 
@@ -21,7 +21,6 @@ export const Entries = () => {
     axiosPath
       .get("/profiles")
       .then((res) => {
-        // console.log("res in useEffect: ", res);
         setSubmissions(res.data);
       })
       .catch((err) => {
@@ -29,12 +28,10 @@ export const Entries = () => {
       });
   }, [update]);
 
-  // console.log("submissions: ", submissions);
-
   return (
     <>
-      <Grid container spacing={4} className={classes.gridContainer} justify="center">
-        {submissions.map(({ first, last, email, fileId, filename, _id, description, originalName }, index) => {
+      <Grid container spacing={5} className={classes.gridContainer} justify="center">
+        {submissions.map(({ first, last, email, fileId, filename, _id, description, originalName, number }, index) => {
           return (
             <Grid item xs={12} sm={6} md={4} lg={3} key={_id}>
               <Entry
@@ -45,13 +42,10 @@ export const Entries = () => {
                 first={first}
                 last={last}
                 email={email}
+                number={number}
                 fileId={fileId}
                 filename={filename}
                 photo={`http://localhost:4000/profile/${filename}`}
-                // setProfileID={setProfileID}
-                // profileID={profileID}
-                // view={view}
-                // setView={setView}
                 _id={_id}
                 description={description}
                 originalName={originalName}

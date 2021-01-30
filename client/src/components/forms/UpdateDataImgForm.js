@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import axiosPath from "../../axios";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import { Paper, Typography, Container, Button } from "@material-ui/core";
+import { Paper, Container, Button } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,7 +33,9 @@ export const UpdateDataImgForm = ({
   filename,
   fileId,
   update,
+  number,
   setUpdate,
+  setOpenPopUp,
 }) => {
   const classes = useStyles();
   const [image, setImage] = useState("");
@@ -41,14 +43,14 @@ export const UpdateDataImgForm = ({
   const [updateLast, setUpdateLast] = useState(last);
   const [updateEmail, setUpdateEmail] = useState(email);
   const [updateDescription, setUpdateDescription] = useState(description);
-  // const [updateOriginalName, setUpdateOriginalName] = useState(originalName);
+  const [updateNumber, setUpdateNumber] = useState(number);
   const { register, handleSubmit } = useForm();
 
   const stepOne = async (filename) => {
     try {
       await axiosPath.delete(`/deletepic/${filename}`);
     } catch (err) {
-      console.log("Error ImageForm line 13: ", err);
+      console.log("Error UpdateDataImgForm line 53: ", err);
     }
   };
 
@@ -62,8 +64,6 @@ export const UpdateDataImgForm = ({
       await axiosPath
         .post("/uploadPic", newPhoto, { headers: { "Content-Type": "multipart/form-data" } })
         .then((res) => {
-          console.log("filename: ", res.data.filename);
-          console.log("fileId: ", res.data.fileId);
           newFilename = res.data.filename;
           newFileId = res.data.fileId;
           newOriginalName = res.data.originalName;
@@ -74,32 +74,29 @@ export const UpdateDataImgForm = ({
         originalName: newOriginalName,
         first: updateFirst,
         last: updateLast,
+        number: updateNumber,
         email: updateEmail,
         description: updateDescription,
       });
     } catch (err) {
-      console.log("Error ImageForm line 33: ", err);
+      console.log("Error UpdateDataImgForm line 82: ", err);
     }
   };
 
   const onSubmit = async () => {
     try {
-      console.log("entering submit");
       await stepOne(filename);
-      console.log("done step one");
       await stepTwo();
-      console.log("done step 2");
       setUpdate(update + 1);
     } catch (err) {
-      console.log("Error ImageForm line 42: ", err);
+      console.log("Error UpdateDataImgForm line 92: ", err);
     }
+    setOpenPopUp(false);
   };
 
   return (
     <Container className={classes.flex} maxWidth="sm">
       <Paper className={classes.paper}>
-        <Typography>Please Update This Submission</Typography>
-
         <form id="userForm" className={classes.root} autoComplete="off" encType="multipart/form-data">
           <TextField
             id="first"
@@ -142,6 +139,20 @@ export const UpdateDataImgForm = ({
             InputLabelProps={{
               shrink: true,
             }}
+          />
+          <TextField
+            id="number"
+            name="number"
+            value={updateNumber}
+            onChange={(e) => setUpdateNumber(e.target.value)}
+            ref={register({ required: true, name: "number" })}
+            label="Number for Calculations"
+            type="text"
+            placeholder={number}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            variant="outlined"
           />
           <TextField
             id="description"

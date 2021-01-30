@@ -79,7 +79,10 @@ const ProfileSchema = new mongoose.Schema({
     required: true,
     type: String,
   },
-
+  number: {
+    required: true,
+    type: Number,
+  },
   filename: {
     required: true,
     type: String,
@@ -146,6 +149,7 @@ app.post("/uploadForm", upload.single("photo"), async (req, res) => {
       last: req.body.last,
       email: req.body.email,
       description: req.body.description,
+      number: req.body.number,
       originalName: req.file.originalname,
       filename: req.file.filename,
       fileId: req.file.id,
@@ -184,9 +188,6 @@ app.delete("/deletepic/:filename", async (req, res) => {
 app.patch("/updateData/:id", async (req, res) => {
   try {
     const update = req.body;
-    // console.log(update);
-    // console.log(req.params.id);
-    // console.log("update in patch first: ", update.first);
     await UserProfile.findByIdAndUpdate(
       { _id: req.params.id },
       {
@@ -195,9 +196,9 @@ app.patch("/updateData/:id", async (req, res) => {
         email: update.email,
         description: update.description,
         originalName: update.originalName,
+        number: update.number,
       },
     );
-    // console.log("past await");
     res.status(200).send("successly updated");
   } catch (err) {
     res.send(err);
@@ -231,6 +232,7 @@ app.patch("/updateBoth/:id", async (req, res) => {
         last: update.last,
         email: update.email,
         description: update.description,
+        number: update.number,
         originalName: update.originalName,
         filename: update.filename,
         fileId: update.fileId,
@@ -243,7 +245,6 @@ app.patch("/updateBoth/:id", async (req, res) => {
 });
 
 app.post("/uploadPic", upload.single("photo"), async (req, res) => {
-  // console.log("req.file in post", req.file);
   res.json({ filename: req.file.filename, fileId: req.file.id, originalName: req.file.originalname });
 });
 
