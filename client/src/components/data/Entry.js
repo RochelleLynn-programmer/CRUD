@@ -11,17 +11,17 @@ import {
   Popover,
 } from "@material-ui/core";
 import InfoTwoToneIcon from "@material-ui/icons/InfoTwoTone";
-import FavoriteBorderTwoToneIcon from "@material-ui/icons/FavoriteBorderTwoTone";
 import HighlightOffTwoToneIcon from "@material-ui/icons/HighlightOffTwoTone";
 import axiosPath from "../../axios";
 import "./data.css";
 
 const useStyles = makeStyles({
   root: {
-    width: 300,
+    width: 280,
     marginBottom: "0px",
     paddingBottom: "0px",
     background: "ghostwhite",
+    alignSelf: "center",
   },
   media: {
     marginTop: "5px",
@@ -56,7 +56,6 @@ export const Entry = ({
   _id,
   description,
   originalName,
-  number,
   index,
   update,
   setUpdate,
@@ -64,7 +63,6 @@ export const Entry = ({
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorEl2, setAnchorEl2] = useState(null);
-  const [anchorEl3, setAnchorEl3] = useState(null);
 
   const handlePopoverOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -78,15 +76,9 @@ export const Entry = ({
   const handlePopoverClose2 = () => {
     setAnchorEl2(null);
   };
-  const handlePopoverOpen3 = (event) => {
-    setAnchorEl3(event.currentTarget);
-  };
-  const handlePopoverClose3 = () => {
-    setAnchorEl3(null);
-  };
+
   const open = Boolean(anchorEl);
   const open2 = Boolean(anchorEl2);
-  const open3 = Boolean(anchorEl3);
 
   const handleDelete = async (filename, _id) => {
     try {
@@ -164,38 +156,6 @@ export const Entry = ({
           >
             <Typography>More Information and Edit</Typography>
           </Popover>
-
-          <>
-            <IconButton size="small" color="primary">
-              <FavoriteBorderTwoToneIcon
-                aria-owns={open ? "mouse-over-popover-add" : undefined}
-                aria-haspopup="true"
-                onMouseEnter={handlePopoverOpen3}
-                onMouseLeave={handlePopoverClose3}
-              />
-            </IconButton>
-            <Popover
-              id="mouse-over-popover-add"
-              className={classes.popover}
-              classes={{
-                paper: classes.paper,
-              }}
-              open={open3}
-              anchorEl={anchorEl3}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              onClose={handlePopoverClose3}
-              disableRestoreFocus
-            >
-              <Typography>Button will eventually add item to a list</Typography>
-            </Popover>
-          </>
         </div>
       </CardActions>
       <CardMedia
@@ -209,9 +169,6 @@ export const Entry = ({
         <Typography variant="subtitle2">Item Name:</Typography>
         <Typography gutterBottom variant="h6" component="h2">
           {originalName.slice(0, 25)}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
-          Number for calculations: {number}
         </Typography>
       </CardContent>
     </Card>

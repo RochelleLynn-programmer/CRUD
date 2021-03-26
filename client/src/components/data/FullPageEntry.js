@@ -125,11 +125,9 @@ export default function FullPageEntry({ match }) {
     const last = submission[0].last;
     const fileId = submission[0].fileId;
     const filename = submission[0].filename;
-    const number = submission[0].number;
     const _id = submission[0]._id;
     const description = submission[0].description;
     const originalName = submission[0].originalName;
-    let subHeaderText = `Number for calculations: ${number}`;
     let formPopupHeader;
 
     if (formOptions === "info") {
@@ -142,7 +140,6 @@ export default function FullPageEntry({ match }) {
           email={email}
           description={description}
           originalName={originalName}
-          number={number}
           update={update}
           setUpdate={setUpdate}
           openPopUp={openPopUp}
@@ -171,7 +168,6 @@ export default function FullPageEntry({ match }) {
           email={email}
           description={description}
           originalName={originalName}
-          number={number}
           _id={_id}
           filename={filename}
           fileId={fileId}
@@ -239,7 +235,6 @@ export default function FullPageEntry({ match }) {
                   open={open}
                   onClose={() => setAnchorEl(null)}
                 >
-                  <MenuItem onClick={() => handleMenuClick(null)}>Update Nothing</MenuItem>
                   <MenuItem onClick={() => handleMenuClick("info")}>Update Information</MenuItem>
                   <MenuItem onClick={() => handleMenuClick("image")}>Update Image</MenuItem>
                   <MenuItem onClick={() => handleMenuClick("both")}>Update Info and Image</MenuItem>
@@ -247,7 +242,6 @@ export default function FullPageEntry({ match }) {
               </>
             }
             title={originalName}
-            subheader={subHeaderText}
           />
           <CardMedia
             component="img"
@@ -257,10 +251,10 @@ export default function FullPageEntry({ match }) {
           />
           <CardContent>
             <Typography align="center" variant="body2" color="textSecondary" component="p">
-              Description submitted by user: {description}
+              Photo submitted by: {first} {last}
             </Typography>
             <Typography align="center" variant="body2" color="textSecondary" component="p">
-              Photo submitted by: {first} {last}
+              Description of image: {description}
             </Typography>
             <Typography align="center" variant="body2" color="textSecondary" component="p">
               Contact: {email}

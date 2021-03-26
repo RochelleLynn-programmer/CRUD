@@ -1,9 +1,13 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
 import axiosPath from "../../axios";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import { Paper, Container, Button } from "@material-ui/core";
+import { Paper, Container, Button, Snackbar } from "@material-ui/core";
+import MuiAlert from "@material-ui/lab/Alert";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,22 +43,47 @@ export const UpdateDataForm = ({
   const [updateFirst, setUpdateFirst] = useState(first);
   const [updateLast, setUpdateLast] = useState(last);
   const [updateEmail, setUpdateEmail] = useState(email);
-  const [updateNumber, setUpdateNumber] = useState(number);
   const [updateDescription, setUpdateDescription] = useState(description);
   const [updateOriginalName, setUpdateOriginalName] = useState(originalName);
-  const { register, handleSubmit } = useForm();
+  const [errorM, setErrorM] = useState(false);
+  const [emailErr, setEmailErr] = useState(false);
 
-  const onSubmit = async () => {
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setErrorM(false);
+  };
+
+  const checkEmail = (checkInput) => {
+    console.log("entering check email");
+    const emailTester = new RegExp(/^((?!\.)[\w-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/gim);
+    const result = emailTester.test(checkInput);
+    console.log("regex result: ", result);
+    if (result) {
+      console.log("entering if block of checkEmail");
+      setEmailErr(false);
+      return true;
+    } else setEmailErr(true);
+  };
+
+  const checkState = () => {
+    console.log("entering check state");
+
+    if (updateFirst && updateLast && updateEmail && updateDescription) {
+      console.log("passed stateCheck");
+      return true;
+    } else setErrorM(true);
+  };
+
+  const onPassTests = async () => {
     const body = {
       first: updateFirst,
       last: updateLast,
       email: updateEmail,
       description: updateDescription,
       originalName: updateOriginalName,
-      number: updateNumber,
     };
-
-    console.log(body);
     try {
       await axiosPath.patch(`/updateData/${_id}`, body, {
         headers: { "Content-Type": "application/json" },
@@ -66,101 +95,102 @@ export const UpdateDataForm = ({
     }
     setOpenPopUp(false);
   };
+  const onSubmit = async () => {
+    if (checkEmail(updateEmail)) {
+      if (checkState()) {
+        await onPassTests();
+      } else setErrorM(true);
+    } else setErrorM(true);
+  };
   return (
-    <Container className={classes.flex} maxWidth="sm">
+    <Container className={classes.flex}>
       <Paper className={classes.paper}>
-        <form id="userForm" className={classes.root} autoComplete="off">
+        <form id="dataForm" className={classes.root} autoComplete="off">
           <TextField
+            required
+            label="First Name"
             id="first"
             name="first"
             value={updateFirst}
-            placeholder={first}
             onChange={(e) => setUpdateFirst(e.target.value)}
-            ref={register({ required: true, name: "first" })}
-            label="First Name"
+            error={!updateFirst}
             type="text"
             variant="outlined"
             InputLabelProps={{
               shrink: true,
             }}
+            placeholder={first}
           />
           <TextField
+            required
+            label="Last Name"
             id="last"
             name="last"
             value={updateLast}
-            placeholder={last}
             onChange={(e) => setUpdateLast(e.target.value)}
-            ref={register({ required: true, name: "last" })}
-            label="Last Name"
+            error={!updateLast}
             type="text"
             variant="outlined"
             InputLabelProps={{
               shrink: true,
             }}
+            placeholder={last}
           />
           <TextField
+            required
+            label="Email Address"
             id="email"
             name="email"
             value={updateEmail}
-            placeholder={email}
             onChange={(e) => setUpdateEmail(e.target.value)}
-            ref={register({ required: true, name: "email" })}
-            label="Email Address"
+            error={!updateEmail || emailErr}
             type="email"
             variant="outlined"
             InputLabelProps={{
               shrink: true,
             }}
+            placeholder={email}
           />
           <TextField
+            required
+            label="originalName of Image"
             id="originalName"
             name="originalName"
             value={updateOriginalName}
             onChange={(e) => setUpdateOriginalName(e.target.value)}
-            ref={register({ required: true, name: "originalName" })}
-            label="originalName of Image"
+            error={!updateOriginalName}
             type="text"
-            placeholder={originalName}
+            variant="outlined"
             InputLabelProps={{
               shrink: true,
             }}
-            variant="outlined"
+            placeholder={originalName}
           />
           <TextField
+            required
+            label="Description of Image"
             id="description"
             name="description"
             value={updateDescription}
-            placeholder={description}
             onChange={(e) => setUpdateDescription(e.target.value)}
-            ref={register({ required: true, name: "description" })}
-            label="Description of Image"
+            error={!updateDescription}
             type="text"
-            multiline
+            variant="outlined"
             InputLabelProps={{
               shrink: true,
             }}
-            variant="outlined"
-          />
-
-          <TextField
-            id="number"
-            name="number"
-            value={updateNumber}
-            onChange={(e) => setUpdateNumber(e.target.value)}
-            ref={register({ required: true, name: "number" })}
-            label="Number for Calculations"
-            type="text"
+            placeholder={description}
             multiline
-            placeholder={number}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="outlined"
           />
 
-          <Button variant="contained" type="submit" onClick={handleSubmit(onSubmit)}>
+          <Button variant="contained" onClick={onSubmit}>
             Submit
           </Button>
+          <Snackbar open={errorM} autoHideDuration={2000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error">
+              Please make sure all fields are correctly filled out
+            </Alert>
+          </Snackbar>
         </form>
       </Paper>
     </Container>

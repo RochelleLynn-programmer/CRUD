@@ -1,9 +1,13 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
 import axiosPath from "../../axios";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import { Paper, Container, Button } from "@material-ui/core";
+import { Paper, Container, Button, Snackbar } from "@material-ui/core";
+import MuiAlert from "@material-ui/lab/Alert";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,7 +37,6 @@ export const UpdateDataImgForm = ({
   filename,
   fileId,
   update,
-  number,
   setUpdate,
   setOpenPopUp,
 }) => {
@@ -43,10 +46,15 @@ export const UpdateDataImgForm = ({
   const [updateLast, setUpdateLast] = useState(last);
   const [updateEmail, setUpdateEmail] = useState(email);
   const [updateDescription, setUpdateDescription] = useState(description);
-  const [updateNumber, setUpdateNumber] = useState(number);
-  const { register, handleSubmit } = useForm();
+  const [openErrMessage, setOpenErrMessage] = useState(false);
+  const [emailErr, setEmailErr] = useState(false);
+
+  let newFilename;
+  let newFileId;
+  let newOriginalName;
 
   const stepOne = async (filename) => {
+    console.log("entered stepOne func");
     try {
       await axiosPath.delete(`/deletepic/${filename}`);
     } catch (err) {
@@ -55,9 +63,7 @@ export const UpdateDataImgForm = ({
   };
 
   const stepTwo = async () => {
-    let newFilename;
-    let newFileId;
-    let newOriginalName;
+    console.log("entered steptwo func");
     try {
       const newPhoto = new FormData();
       newPhoto.append("photo", image);
@@ -68,25 +74,45 @@ export const UpdateDataImgForm = ({
           newFileId = res.data.fileId;
           newOriginalName = res.data.originalName;
         });
+    } catch (err) {
+      console.log("Error UpdateDataImgForm line 82: ", err);
+    }
+  };
+
+  const stepThree = async () => {
+    try {
       await axiosPath.patch(`/updateBoth/${_id}`, {
         filename: newFilename,
         fileId: newFileId,
         originalName: newOriginalName,
         first: updateFirst,
         last: updateLast,
-        number: updateNumber,
         email: updateEmail,
         description: updateDescription,
       });
     } catch (err) {
-      console.log("Error UpdateDataImgForm line 82: ", err);
+      console.log("err update data/img form line 94: ", err);
     }
   };
 
-  const onSubmit = async () => {
+  const checkEmail = (checkInput) => {
+    console.log("entering check email");
+    const emailTester = new RegExp(/^((?!\.)[\w-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/gim);
+    const result = emailTester.test(checkInput);
+    console.log("regex result: ", result);
+    if (result) {
+      console.log("entering if block of checkEmail");
+      setEmailErr(false);
+      return true;
+    } else setEmailErr(true);
+  };
+
+  const onPassTests = async () => {
+    console.log("entered onpassTests func");
     try {
       await stepOne(filename);
       await stepTwo();
+      await stepThree();
       setUpdate(update + 1);
     } catch (err) {
       console.log("Error UpdateDataImgForm line 92: ", err);
@@ -94,95 +120,116 @@ export const UpdateDataImgForm = ({
     setOpenPopUp(false);
   };
 
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenErrMessage(false);
+  };
+
+  const checkState = async () => {
+    console.log("Entered checkstate func");
+    if (updateFirst && updateLast && updateEmail && updateDescription && image) {
+      return true;
+    } else {
+      setOpenErrMessage(true);
+    }
+  };
+
+  const onSubmit = async () => {
+    if (checkEmail(updateEmail)) {
+      if (checkState) {
+        await onPassTests();
+      }
+    } else setOpenErrMessage(true);
+  };
+
   return (
     <Container className={classes.flex} maxWidth="sm">
       <Paper className={classes.paper}>
-        <form id="userForm" className={classes.root} autoComplete="off" encType="multipart/form-data">
+        <form id="updateDataImgForm" className={classes.root} autoComplete="off" encType="multipart/form-data">
           <TextField
+            required
+            label="First Name"
             id="first"
             name="first"
             value={updateFirst}
-            placeholder={first}
             onChange={(e) => setUpdateFirst(e.target.value)}
-            ref={register({ required: true, name: "first" })}
-            label="First Name"
+            error={!updateFirst}
             type="text"
             variant="outlined"
             InputLabelProps={{
               shrink: true,
             }}
+            placeholder={first}
           />
           <TextField
+            required
+            label="Last Name"
             id="last"
             name="last"
             value={updateLast}
-            placeholder={last}
             onChange={(e) => setUpdateLast(e.target.value)}
-            ref={register({ required: true, name: "last" })}
-            label="Last Name"
+            error={!updateLast}
             type="text"
             variant="outlined"
             InputLabelProps={{
               shrink: true,
             }}
+            placeholder={last}
           />
           <TextField
+            required
+            label="Email Address"
             id="email"
             name="email"
             value={updateEmail}
-            placeholder={email}
             onChange={(e) => setUpdateEmail(e.target.value)}
-            ref={register({ required: true, name: "email" })}
-            label="Email Address"
+            error={!updateEmail || emailErr}
             type="email"
             variant="outlined"
             InputLabelProps={{
               shrink: true,
             }}
+            placeholder={email}
           />
+
           <TextField
-            id="number"
-            name="number"
-            value={updateNumber}
-            onChange={(e) => setUpdateNumber(e.target.value)}
-            ref={register({ required: true, name: "number" })}
-            label="Number for Calculations"
-            type="text"
-            placeholder={number}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="outlined"
-          />
-          <TextField
+            required
+            label="Description of Image"
             id="description"
             name="description"
             value={updateDescription}
-            placeholder={description}
             onChange={(e) => setUpdateDescription(e.target.value)}
-            ref={register({ required: true, name: "description" })}
-            label="Description of Image"
+            error={!updateDescription}
             type="text"
-            multiline
+            variant="outlined"
             InputLabelProps={{
               shrink: true,
             }}
-            variant="outlined"
+            placeholder={description}
+            multiline
           />
           <TextField
+            required
+            helperText="Select an Image"
             id="photo"
             type="file"
             name="photo"
             onChange={(e) => setImage(e.target.files[0])}
-            ref={register({ required: true, name: "photo" })}
-            helperText="Select an Image"
+            error={!image}
             InputLabelProps={{
               shrink: true,
             }}
           />
-          <Button variant="contained" type="submit" onClick={handleSubmit(onSubmit)}>
+          <Button variant="contained" onClick={onSubmit}>
             Submit
           </Button>
+          <Snackbar open={openErrMessage} autoHideDuration={2000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error">
+              Please make sure all fields have a value
+            </Alert>
+          </Snackbar>
         </form>
       </Paper>
     </Container>

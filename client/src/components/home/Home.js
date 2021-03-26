@@ -23,6 +23,7 @@ export const Home = () => {
       <Paper elevation={3}>
         <Typography variant="h6">CRUD Operations</Typography>
         <Typography variant="subtitle1">Stack includes: React, Express, Mongoose, GridFs </Typography>
+        <Typography variant="subtitle1">Styling: MaterialUI</Typography>
         <Typography variant="body2">This small app is an example of ability to perform CRUD operations </Typography>
       </Paper>
     </div>

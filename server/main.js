@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //url to monggo database
 const mongoURL = process.env.MONGO_URL;
-// console.log(process.env);
+
 //connect to the database
 mongoose
   .connect(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -40,7 +40,6 @@ const storage = new GridFsStorage({
   url: mongoURL,
   file: (req, file) => {
     return new Promise((resolve, reject) => {
-      // console.log("entered storage, req.body follows", req.body),
       crypto.randomBytes(16, (err, buf) => {
         if (err) {
           return reject(err);
@@ -79,10 +78,6 @@ const ProfileSchema = new mongoose.Schema({
     required: true,
     type: String,
   },
-  number: {
-    required: true,
-    type: Number,
-  },
   filename: {
     required: true,
     type: String,
@@ -92,6 +87,7 @@ const ProfileSchema = new mongoose.Schema({
     type: String,
   },
 });
+
 const UserProfile = mongoose.model("UserProfiles", ProfileSchema);
 
 app.get("/", (req, res) => {
@@ -106,6 +102,7 @@ app.get("/profiles", async (req, res) => {
     res.send("error: ", err);
   }
 });
+
 app.get("/oneprofile/:id", async (req, res) => {
   try {
     const profile = await UserProfile.find({ _id: req.params.id });
@@ -114,27 +111,28 @@ app.get("/oneprofile/:id", async (req, res) => {
     res.send("error: ", err);
   }
 });
+
 app.get("/files", async (req, res) => {
   try {
     await gfs.files.find().toArray((err, files) => {
       return res.json(files);
     });
   } catch (err) {
-    console.log(err);
+    console.log("error: ", err);
   }
 });
+
 app.get("/profile/:filename", async (req, res) => {
   try {
     await gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
       if (!file) {
-        return res.json({ err: "no photo for you" });
+        return res.json({ err: "unable to get photo" });
       }
       if (file.contentType === "image/jpeg" || file.contentType === "image/png" || file.contentType === "image/jpg") {
-        // console.log("reading photo");
         const readstream = gfs.createReadStream(file.filename);
         readstream.pipe(res);
       } else {
-        res.send("fail");
+        res.send("error: ", err);
       }
     });
   } catch (err) {
@@ -149,17 +147,16 @@ app.post("/uploadForm", upload.single("photo"), async (req, res) => {
       last: req.body.last,
       email: req.body.email,
       description: req.body.description,
-      number: req.body.number,
       originalName: req.file.originalname,
       filename: req.file.filename,
       fileId: req.file.id,
     });
     newProfile.save();
+    res.send("Successfully uploaded form");
   } catch (err) {
     console.log(err);
+    res.send("error: ", err);
   }
-  // console.log("req.file in post", req.file);
-  res.send("no obvious error");
 });
 
 app.delete("/deleteprofile/:id", async (req, res) => {
@@ -173,7 +170,6 @@ app.delete("/deleteprofile/:id", async (req, res) => {
 
 app.delete("/deletepic/:filename", async (req, res) => {
   try {
-    // console.log("entering try block of gfs delete");
     await gfs.remove({ filename: req.params.filename, root: "profiles" }, (err, GridFSBucket) => {
       if (err) {
         return res.status(418).json({ "line 159: ": err });
@@ -186,6 +182,7 @@ app.delete("/deletepic/:filename", async (req, res) => {
 });
 
 app.patch("/updateData/:id", async (req, res) => {
+  console.log("entered server route");
   try {
     const update = req.body;
     await UserProfile.findByIdAndUpdate(
@@ -196,7 +193,6 @@ app.patch("/updateData/:id", async (req, res) => {
         email: update.email,
         description: update.description,
         originalName: update.originalName,
-        number: update.number,
       },
     );
     res.status(200).send("successly updated");
@@ -232,7 +228,6 @@ app.patch("/updateBoth/:id", async (req, res) => {
         last: update.last,
         email: update.email,
         description: update.description,
-        number: update.number,
         originalName: update.originalName,
         filename: update.filename,
         fileId: update.fileId,
