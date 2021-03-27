@@ -38,7 +38,7 @@ export const Entries = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.log("Error line 41 in Entries.js: ", err);
       });
     return () => (isSubscribed = false);
   }, [update, submissions]);

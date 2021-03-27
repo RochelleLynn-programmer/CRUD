@@ -56,22 +56,21 @@ export const UpdateDataForm = ({
   };
 
   const checkEmail = (checkInput) => {
-    console.log("entering check email");
+    // console.log("entering check email");
     const emailTester = new RegExp(/^((?!\.)[\w-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/gim);
     const result = emailTester.test(checkInput);
-    console.log("regex result: ", result);
+    // console.log("regex result: ", result);
     if (result) {
-      console.log("entering if block of checkEmail");
+      // console.log("entering if block of checkEmail");
       setEmailErr(false);
       return true;
     } else setEmailErr(true);
   };
 
   const checkState = () => {
-    console.log("entering check state");
-
+    // console.log("entering check state");
     if (updateFirst && updateLast && updateEmail && updateDescription) {
-      console.log("passed stateCheck");
+      // console.log("passed stateCheck");
       return true;
     } else setErrorM(true);
   };
@@ -91,7 +90,7 @@ export const UpdateDataForm = ({
       setUpdate(update + 1);
       console.log("update num: ", update);
     } catch (err) {
-      console.log("Error UpdateDataForm line 65: ", err);
+      console.log("Error on line 93 UpdateDataForm.js: ", err);
     }
     setOpenPopUp(false);
   };

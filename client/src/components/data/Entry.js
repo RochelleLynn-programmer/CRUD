@@ -86,7 +86,7 @@ export const Entry = ({
       await axiosPath.delete(`/deletepic/${filename}`);
       setUpdate(update + 1);
     } catch (err) {
-      console.log("Error Profiles line 23: ", err);
+      console.log("Error on line 89 in Entry.js: ", err);
     }
   };
 

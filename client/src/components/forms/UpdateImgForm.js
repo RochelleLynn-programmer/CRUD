@@ -32,7 +32,7 @@ export default function UpdateImgForm({ filename, fileId, _id, update, setUpdate
     try {
       await axiosPath.delete(`/deletepic/${filename}`);
     } catch (err) {
-      console.log("Error ImageForm line 35: ", err);
+      console.log("Error on line 35 UpdateImgForm.js: ", err);
     }
   };
 
@@ -56,7 +56,7 @@ export default function UpdateImgForm({ filename, fileId, _id, update, setUpdate
         originalName: newOriginalName,
       });
     } catch (err) {
-      console.log("Error ImageForm line 59: ", err);
+      console.log("Error on line 59 UpdateImgForm.js: ", err);
     }
   };
 
@@ -66,7 +66,7 @@ export default function UpdateImgForm({ filename, fileId, _id, update, setUpdate
       await stepTwo();
       setUpdate(update + 1);
     } catch (err) {
-      console.log("Error ImageForm line 69: ", err);
+      console.log("Error on line 69 UpdateImgForm.js: ", err);
     }
     setOpenPopUp(false);
   };

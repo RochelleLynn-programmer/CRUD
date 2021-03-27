@@ -54,16 +54,16 @@ export const UpdateDataImgForm = ({
   let newOriginalName;
 
   const stepOne = async (filename) => {
-    console.log("entered stepOne func");
+    // console.log("entered stepOne func");
     try {
       await axiosPath.delete(`/deletepic/${filename}`);
     } catch (err) {
-      console.log("Error UpdateDataImgForm line 53: ", err);
+      console.log("Error on line 53 UpdateDataImgForm.js: ", err);
     }
   };
 
   const stepTwo = async () => {
-    console.log("entered steptwo func");
+    // console.log("entered steptwo func");
     try {
       const newPhoto = new FormData();
       newPhoto.append("photo", image);
@@ -75,7 +75,7 @@ export const UpdateDataImgForm = ({
           newOriginalName = res.data.originalName;
         });
     } catch (err) {
-      console.log("Error UpdateDataImgForm line 82: ", err);
+      console.log("Error on line 78 UpdateDataImgForm.js: ", err);
     }
   };
 
@@ -91,31 +91,31 @@ export const UpdateDataImgForm = ({
         description: updateDescription,
       });
     } catch (err) {
-      console.log("err update data/img form line 94: ", err);
+      console.log("Error on line 94 in UpdateDataImgForm.js: ", err);
     }
   };
 
   const checkEmail = (checkInput) => {
-    console.log("entering check email");
+    // console.log("entering check email");
     const emailTester = new RegExp(/^((?!\.)[\w-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/gim);
     const result = emailTester.test(checkInput);
-    console.log("regex result: ", result);
+    // console.log("regex result: ", result);
     if (result) {
-      console.log("entering if block of checkEmail");
+      // console.log("entering if block of checkEmail");
       setEmailErr(false);
       return true;
     } else setEmailErr(true);
   };
 
   const onPassTests = async () => {
-    console.log("entered onpassTests func");
+    // console.log("entered onpassTests func");
     try {
       await stepOne(filename);
       await stepTwo();
       await stepThree();
       setUpdate(update + 1);
     } catch (err) {
-      console.log("Error UpdateDataImgForm line 92: ", err);
+      console.log("Error on line 118 in UpdateDataImgForm.js: ", err);
     }
     setOpenPopUp(false);
   };
@@ -128,7 +128,7 @@ export const UpdateDataImgForm = ({
   };
 
   const checkState = async () => {
-    console.log("Entered checkstate func");
+    // console.log("Entered checkstate func");
     if (updateFirst && updateLast && updateEmail && updateDescription && image) {
       return true;
     } else {

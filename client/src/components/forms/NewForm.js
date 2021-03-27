@@ -51,7 +51,7 @@ export const NewForm = () => {
   const emailTester = new RegExp(/^((?!\.)[\w-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/);
 
   const setErrorHighlight = () => {
-    console.log("entered set error highlight");
+    // console.log("entered set error highlight");
     if (!first) {
       setFirstErr(true);
     } else setFirstErr(false);
@@ -82,9 +82,9 @@ export const NewForm = () => {
   };
 
   const checkEmail = (checkInput) => {
-    console.log("entered checkEmail func");
+    // console.log("entered checkEmail func");
     const result = emailTester.test(checkInput);
-    console.log("result from regex: ", result);
+    // console.log("result from regex: ", result);
     if (result) {
       setFailedEmailTest(false);
       return true;
@@ -115,14 +115,14 @@ export const NewForm = () => {
       setDescErr(false);
       setImgErr(false);
     } catch (err) {
-      console.log("Error NewForm line 127: ", err);
+      console.log("Error on line 118 in NewForm.js: ", err);
     }
   };
 
   const checkState = async () => {
-    console.log("entered checkState func");
+    // console.log("entered checkState func");
     if (checkEmail(email)) {
-      console.log("passed email check");
+      // console.log("passed email check");
       if (first && last && email && description && image) {
         console.log("passed state check");
         setSubmitted(true);

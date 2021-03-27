@@ -118,7 +118,7 @@ app.get("/files", async (req, res) => {
       return res.json(files);
     });
   } catch (err) {
-    console.log("error: ", err);
+    res.send("error: ", err);
   }
 });
 
@@ -136,7 +136,7 @@ app.get("/profile/:filename", async (req, res) => {
       }
     });
   } catch (err) {
-    console.log(err);
+    res.send("error: ", err);
   }
 });
 
@@ -154,7 +154,6 @@ app.post("/uploadForm", upload.single("photo"), async (req, res) => {
     newProfile.save();
     res.send("Successfully uploaded form");
   } catch (err) {
-    console.log(err);
     res.send("error: ", err);
   }
 });
@@ -164,7 +163,7 @@ app.delete("/deleteprofile/:id", async (req, res) => {
     await UserProfile.findByIdAndDelete({ _id: req.params.id });
     res.status(200).send("Successfully deleted");
   } catch (err) {
-    res.status(419).json({ "line 152: ": err });
+    res.status(419).res.send("error: ", err);
   }
 });
 
@@ -177,7 +176,7 @@ app.delete("/deletepic/:filename", async (req, res) => {
       res.send("Success");
     });
   } catch (err) {
-    res.json({ "line 162: ": err });
+    res.send("error: ", err);
   }
 });
 
@@ -212,7 +211,7 @@ app.patch("/updatePic/:id", async (req, res) => {
     );
     res.send("success");
   } catch (err) {
-    res.json({ err: err });
+    res.send("error: ", err);
   }
 });
 
@@ -235,7 +234,7 @@ app.patch("/updateBoth/:id", async (req, res) => {
     );
     res.send("success");
   } catch (err) {
-    res.json({ err: err });
+    res.send("error: ", err);
   }
 });
 

@@ -90,9 +90,11 @@ export default function FullPageEntry({ match }) {
   const [anchorElHover, setAnchorElHover] = useState(null);
   const open = Boolean(anchorEl);
   const openHover = Boolean(anchorElHover);
+
   const handlePopoverOpen = (event) => {
     setAnchorElHover(event.currentTarget);
   };
+
   const handlePopoverClose = () => {
     setAnchorElHover(null);
   };
@@ -114,7 +116,7 @@ export default function FullPageEntry({ match }) {
         setSubmission(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        console.log("Error on line 119 in FullPageEntry.js: ", err);
       });
   }, [match.params.id, update]);
   let updateFormChoice;
